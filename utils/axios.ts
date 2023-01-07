@@ -1,7 +1,9 @@
-import axios from 'axios';
+import axios from "axios";
 
-const instance = axios.create({
-    baseURL: 'https://assignments.reaktor.com/birdnest',
+export const birdnestInstance = axios.create({
+  baseURL: "https://assignments.reaktor.com/birdnest",
 });
 
-export default instance;
+export const serverInstance = axios.create({
+  baseURL: "http://localhost:3000/api",
+});
