@@ -1,4 +1,4 @@
-import { serverInstance as axios } from "../../utils/axios";
+import axios from "../../utils/axios";
 
 export default function useDrones() {
   const getDrones = new Promise((resolve, reject) => {
