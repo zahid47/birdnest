@@ -3,11 +3,11 @@
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import dayjs from "dayjs";
-import { getDrones } from "../../app/page";
+import axios from "../../utils/axios";
 
-export default function useDrones(initialDrones: any) {
+export default function useDrones() {
   const socket = io(process.env.NEXT_PUBLIC_SERVER_URL!);
-  const [drones, setDrones] = useState<any[]>(initialDrones);
+  const [drones, setDrones] = useState<any[]>([]);
 
   useEffect(() => {
     socket.connect();
@@ -42,13 +42,17 @@ export default function useDrones(initialDrones: any) {
     };
   }, [drones, socket]);
 
-  const fetchDrones = async () => {
-    const drones = await getDrones();
-    setDrones(drones);
+  const getDrones = async () => {
+    try {
+      const res = await axios.get("/drones");
+      setDrones(res.data);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   useEffect(() => {
-    fetchDrones();
+    getDrones();
   }, [drones]);
 
   return {

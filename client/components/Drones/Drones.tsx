@@ -3,8 +3,8 @@
 import Drone from "../Drone/Drone";
 import useDrones from "./useDrones";
 
-export default function Drones({ initialDrones }: any) {
-  const { drones } = useDrones(initialDrones);
+export default function Drones() {
+  const { drones } = useDrones();
 
   return (
     <article>
