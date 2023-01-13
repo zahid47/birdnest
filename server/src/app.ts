@@ -10,10 +10,6 @@ dotenv.config();
 app.use(cors({ origin: process.env.CLIENT_URL }));
 
 //Routes
-app.get("/", (_req: Request, res: Response) => {
-  return res.sendStatus(200);
-});
-
 app.get("/drones", async (_req: Request, res: Response) => {
   const drones = await getDrones();
   return res.status(200).json(drones);
