@@ -1,13 +1,15 @@
 import axios from "./axios";
-import Drone from "../Models/Drone.model";
 import getDistanceInMeters from "./getDistanceInMeters";
 import serializeResponse from "./serializeResponse";
 import { AsyncTask, SimpleIntervalJob } from "toad-scheduler";
 import { io } from "../server";
 import fetchPilotData from "./fetchPilotData";
+import { upsertDrone } from "../modules/Drone/Drone.service";
+import { IDrone } from "../modules/Drone/Drone";
 
 const fetchNewDrones = async () => {
-  console.log("fetching new drones: " + new Date().toISOString());
+  console.log("Looking for new drones violating the NDZ...");
+
   axios
     .get("/drones")
     .then((response) => {
@@ -20,38 +22,26 @@ const fetchNewDrones = async () => {
         );
 
         if (distance > 100) return;
+        console.log("Found a drone violating the NDZ!");
 
-        console.log(`Found a drone violating the NDZ`);
-        const droneData: any = {
+        // fetching the pilot data
+        const pilot = await fetchPilotData(drone.serialNumber._text);
+
+        let droneData: IDrone = {
           serialNumber: drone.serialNumber._text,
           model: drone.model._text,
           closestDistance: distance,
+          pilot: {
+            pilotId: pilot?.pilotId,
+            name: pilot?.firstName + " " + pilot?.lastName,
+            phoneNumber: pilot?.phoneNumber,
+            email: pilot?.email,
+          },
         };
-        const pilotData = await fetchPilotData(drone.serialNumber._text);
 
-        droneData["pilotName"] = pilotData
-          ? pilotData.firstName + " " + pilotData.lastName
-          : null;
-        droneData["phoneNumber"] = pilotData ? pilotData.phoneNumber : null;
-        droneData["email"] = pilotData ? pilotData.email : null;
-
-        Drone.findOneAndUpdate(
-          {
-            serialNumber: drone.serialNumber._text,
-            model: drone.model._text,
-          },
-          droneData,
-          {
-            upsert: true,
-            new: true,
-          },
-          (err, doc) => {
-            if (err) {
-              console.error(err);
-              console.error("Something wrong when updating data!");
-            }
-            io.emit("foundNewDrone", doc);
-          }
+        // saving the data to db and then emiting the event to client
+        upsertDrone(droneData).then((data) =>
+          io.emit("foundNewDrone", data)
         );
       });
 

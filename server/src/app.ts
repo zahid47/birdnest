@@ -1,8 +1,8 @@
-import express, { Express, Request, Response } from "express";
-import dotenv from "dotenv";
 import cors from "cors";
+import dotenv from "dotenv";
+import express, { Express, Request, Response } from "express";
 import { NextFunction } from "express-serve-static-core";
-import Drone from "./Models/Drone.model";
+import { getDrones } from "./modules/Drone/Drone.service";
 
 const app: Express = express();
 
@@ -15,9 +15,7 @@ app.get("/", (_req: Request, res: Response) => {
 });
 
 app.get("/drones", async (_req: Request, res: Response) => {
-  const drones = await Drone.find({
-    createdAt: { $gte: new Date(Date.now() - 10 * 60 * 1000) },
-  }).sort({ createdAt: -1 });
+  const drones = await getDrones();
   return res.status(200).json(drones);
 });
 
