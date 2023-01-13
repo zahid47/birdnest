@@ -4,7 +4,11 @@ import Drone from "../Drone/Drone";
 import useDrones from "./useDrones";
 
 export default function Drones() {
-  const { drones } = useDrones();
+  const { drones, loading } = useDrones();
+
+  if (loading) {
+    return <p className="text-xl font-normal mb-4 text-center">Loading...</p>;
+  }
 
   return (
     <article>

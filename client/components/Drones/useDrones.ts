@@ -8,6 +8,21 @@ import axios from "../../utils/axios";
 export default function useDrones() {
   const socket = io(process.env.NEXT_PUBLIC_SERVER_URL!);
   const [drones, setDrones] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const getDrones = async () => {
+    try {
+      const res = await axios.get("/drones");
+      setDrones(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    getDrones();
+    setLoading(false);
+  }, []);
 
   useEffect(() => {
     socket.connect();
@@ -42,20 +57,8 @@ export default function useDrones() {
     };
   }, [drones, socket]);
 
-  const getDrones = async () => {
-    try {
-      const res = await axios.get("/drones");
-      setDrones(res.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  useEffect(() => {
-    getDrones();
-  }, []);
-
   return {
     drones,
+    loading,
   };
 }

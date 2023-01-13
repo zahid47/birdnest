@@ -17,6 +17,14 @@ export const io = new Server(httpServer, {
   },
 });
 
+io.on("connection", (socket) => {
+  console.log(`${socket.id} connected`);
+
+  socket.on("disconnect", () => {
+    console.log(`${socket.id} disconnected`);
+  });
+});
+
 const server = httpServer.listen(port, async () => {
   await connectToDb();
   scheduler.addSimpleIntervalJob(fetchNewDronesJob);
