@@ -6,8 +6,8 @@
 
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "yarn && tsc",
-    "start": "node build/src/server.js"
+    "start": "node build/src/server.js",
+    "build": "yarn && tsc"
   },
   "dependencies": {
     "axios": "^1.2.2",

@@ -5,7 +5,7 @@ import axios from "../utils/axios";
 
 const cinzel = Cinzel();
 
-const getDrones = async () => {
+export const getDrones = async () => {
   try {
     const res = await axios.get("/drones");
     return res.data;

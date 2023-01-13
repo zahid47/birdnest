@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import dayjs from "dayjs";
+import { getDrones } from "../../app/page";
 
 export default function useDrones(initialDrones: any) {
   const socket = io(process.env.NEXT_PUBLIC_SERVER_URL!);
@@ -40,6 +41,15 @@ export default function useDrones(initialDrones: any) {
       socket.disconnect();
     };
   }, [drones, socket]);
+
+  const fetchDrones = async () => {
+    const drones = await getDrones();
+    setDrones(drones);
+  };
+
+  useEffect(() => {
+    fetchDrones();
+  }, [drones]);
 
   return {
     drones,
