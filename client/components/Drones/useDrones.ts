@@ -53,7 +53,7 @@ export default function useDrones() {
 
   useEffect(() => {
     getDrones();
-  }, [drones]);
+  }, []);
 
   return {
     drones,
