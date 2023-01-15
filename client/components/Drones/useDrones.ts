@@ -5,9 +5,9 @@ import { io } from "socket.io-client";
 import dayjs from "dayjs";
 import axios from "../../utils/axios";
 
-export default function useDrones() {
+export default function useDrones(initialDrones: any) {
   const socket = io(process.env.NEXT_PUBLIC_SERVER_URL!);
-  const [drones, setDrones] = useState<any[]>([]);
+  const [drones, setDrones] = useState<any[]>(initialDrones);
   const [loading, setLoading] = useState<boolean>(true);
 
   const getDrones = async () => {
@@ -15,7 +15,7 @@ export default function useDrones() {
       const res = await axios.get("/drones");
       setDrones(res.data);
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 
